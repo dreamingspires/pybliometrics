@@ -10,7 +10,7 @@ config = configparser.ConfigParser()
 config.optionxform = str
 try:
     if not CONFIG_FILE.exists():
-        config = create_config()
+        raise ValueError('Started without configuration!')
     else:
         config.read(CONFIG_FILE)
     KEYS = [k.strip() for k in config.get('Authentication', 'APIKey').split(",")]
