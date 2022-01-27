@@ -158,7 +158,7 @@ def get_folder(api, view):
 
     from pybliometrics.scopus.utils import CONFIG_FILE, DEFAULT_PATHS
     from pybliometrics.scopus.utils.create_config import create_config
-
+    from pybliometrics.scopus.utils.startup import config
     if not config.has_section('Directories'):
         create_config()
     try:
