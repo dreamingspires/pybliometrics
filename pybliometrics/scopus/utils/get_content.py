@@ -2,7 +2,7 @@ import requests
 
 from pybliometrics import version_info
 from pybliometrics.scopus import exception
-from pybliometrics.scopus.utils.startup import config
+
 
 # Define user agent string for HTTP requests
 user_agent = 'pybliometrics-v' + '.'.join([str(e) for e in version_info[:3]])
@@ -52,8 +52,20 @@ def get_content(url, api, params={}, **kwds):
 
     from simplejson import JSONDecodeError
 
-    from pybliometrics.scopus.utils.startup import _throttling_params, KEYS
-
+    from pybliometrics.scopus.utils.startup import _throttling_params
+    from pybliometrics.scopus.utils.constants import CONFIG_FILE
+    import configparser
+    from pybliometrics.scopus.utils.create_config import create_config
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    try:
+        if not CONFIG_FILE.exists():
+            config = create_config()
+        else:
+            config.read(CONFIG_FILE)
+        KEYS = [k.strip() for k in config.get('Authentication', 'APIKey').split(",")]
+    except EOFError:
+        raise ValueError('Config file not found')
     # Set header, params and proxy
     header = {'X-ELS-APIKey': KEYS[0],
               'Accept': 'application/json',
